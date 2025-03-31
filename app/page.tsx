@@ -1,103 +1,144 @@
-import Image from "next/image";
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Song } from "@/components/retro-tape-player"
+
+// Initial empty songs array
+const initialSongs: Song[] = []
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const router = useRouter()
+  const [songs, setSongs] = useState<Song[]>(initialSongs)
+  const [inputUrl, setInputUrl] = useState("")
+  const [to, setTo] = useState("")
+  const [error, setError] = useState("")
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  // Function to extract YouTube video ID from various YouTube URL formats
+  const extractYouTubeId = (url: string): string | null => {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+    const match = url.match(regExp)
+    return (match && match[7].length === 11) ? match[7] : null
+  }
+
+  const handleAddSong = () => {
+    if (songs.length >= 5) {
+      setError("Maximum of 5 songs allowed in the mixtape!")
+      return
+    }
+
+    const videoId = extractYouTubeId(inputUrl)
+    if (!videoId) {
+      setError("Invalid YouTube URL. Please enter a valid YouTube video link.")
+      return
+    }
+
+    // Add the new song to the mixtape
+    setSongs([...songs, {
+      id: videoId,
+      title: `Song ${songs.length + 1}`, // Placeholder title
+      artist: "Unknown Artist",          // Placeholder artist
+      duration: 0                       // Will be populated by YouTube API
+    }])
+
+    setInputUrl("")
+    setError("")
+  }
+
+  const handleRemoveSong = (index: number) => {
+    const newSongs = [...songs]
+    newSongs.splice(index, 1)
+    setSongs(newSongs)
+  }
+
+  const handleCreateMixtape = () => {
+    if (songs.length === 0) {
+      setError("Please add at least one song to your mixtape!")
+      return
+    }
+
+    // Extract video IDs and create query parameter
+    const videoIds = songs.map(song => song.id).join(',')
+
+    // Navigate to the playback page with video IDs in query parameters
+    router.push(`/mixtape/playback?v=${encodeURIComponent(videoIds)}&to=${encodeURIComponent(to)}`)
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-gray-50 to-gray-100">
+      <h1 className="text-4xl font-bold mb-8 text-center text-gray-800 font-mono tracking-tight">Create Your Mixtape</h1>
+
+      {/* Form to add songs */}
+      <div className="w-full max-w-md mb-6 p-6 bg-white rounded-xl shadow-lg border border-gray-100">
+        <div className="space-y-4">
+          <Input
+            type="text"
+            placeholder="Who is the mixtape for?"
+            value={to}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTo(e.target.value)}
+            className="h-12 text-base"
+          />
+          <div className="flex gap-2">
+            <Input
+              type="text"
+              placeholder="Paste YouTube URL"
+              value={inputUrl}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputUrl(e.target.value)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleAddSong()}
+              className="h-12 text-base flex-1"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <Button 
+              className="h-12 px-6 bg-amber-500 hover:bg-amber-600 text-white transition-colors" 
+              onClick={handleAddSong} 
+              disabled={songs.length >= 5}
+            >
+              Add
+            </Button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
+        <div className="text-sm text-gray-500 mt-3">
+          {songs.length}/5 songs added
+        </div>
+
+        {/* Song list */}
+        {songs.length > 0 && (
+          <div className="mt-6">
+            <h3 className="font-medium mb-3 text-gray-800">Your Mixtape:</h3>
+            <ul className="space-y-2">
+              {songs.map((song, index) => (
+                <li key={index} className="flex justify-between items-center p-3 bg-amber-50 rounded-lg border border-amber-100">
+                  <span className="font-medium text-gray-700">
+                    Track {index + 1}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemoveSong(index)}
+                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                  >
+                    Remove
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Create Mixtape button */}
+        <Button
+          className="w-full mt-6 h-12 bg-amber-500 hover:bg-amber-600 text-white transition-colors text-base font-medium"
+          disabled={songs.length === 0}
+          onClick={handleCreateMixtape}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          Create Mixtape
+        </Button>
+      </div>
     </div>
-  );
+  )
 }
+

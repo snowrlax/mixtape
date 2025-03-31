@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mixtape Application
 
-## Getting Started
+A nostalgic mixtape player that allows you to create a personalized playlist of up to 5 songs from YouTube videos and play them in a retro cassette tape interface.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Add up to 5 YouTube songs to your mixtape
+- Play, pause, skip forward/backward between songs
+- Realistic cassette tape animation that synchronizes with playback
+- Volume control and mute functionality
+- Retro design with animated tape reels
+- Share your mixtape with anyone via a URL
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How to Use
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone and install the project:
+   ```
+   git clone <repository-url>
+   cd mixtape
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Run the development server:
+   ```
+   npm run dev
+   ```
 
-## Learn More
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+4. Copy YouTube video URLs and paste them into the input field.
+   - The application accepts regular YouTube URLs, like:
+   - `https://www.youtube.com/watch?v=VIDEO_ID`
+   - `https://youtu.be/VIDEO_ID`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Click "Add Song" or press Enter to add the song to your mixtape (up to 5 songs).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6. Once you've added songs, click "Create Mixtape" to generate your mixtape.
 
-## Deploy on Vercel
+7. You'll be taken to the playback page where you can:
+   - Press Play/Pause to control playback
+   - Use the Previous/Next buttons to change songs
+   - Adjust volume with the volume slider
+   - Toggle mute with the mute button
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+8. Share your mixtape with others by copying the URL - it contains all the video IDs needed to recreate your playlist!
+   - Example: `/mixtape/playback?v=VIDEO_ID1,VIDEO_ID2,VIDEO_ID3`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Implementation Details
+
+This application uses the YouTube IFrame API to stream audio from YouTube videos. The player embeds a hidden YouTube player that handles the video playback and extracts the audio.
+
+### URL-based Mixtape Sharing
+
+The application uses URL query parameters to store the YouTube video IDs. This allows users to:
+- Share their mixtape by just sharing the URL
+- Bookmark their favorite mixtapes
+- Create mixtapes programmatically by crafting URLs with specific video IDs
+
+For developers:
+- Built with Next.js and TypeScript
+- Uses Tailwind CSS for styling
+- Integrates the YouTube IFrame API for audio playback
+
+## License
+
+MIT
