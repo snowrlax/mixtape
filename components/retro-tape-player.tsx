@@ -8,9 +8,23 @@ import { Slider } from "@/components/ui/slider"
 import { Card, CardContent } from "@/components/ui/card"
 import { playSoundEffect } from "@/public"
 
-// First, ensure the YouTube IFrame API script is loaded
-// You should add this in your main layout or page component
-// <script src="https://www.youtube.com/iframe_api"></script>
+// Add YouTube IFrame API type declaration
+declare global {
+  interface Window {
+    YT: {
+      Player: new (
+        elementId: string,
+        options: {
+          height: string | number;
+          width: string | number;
+          playerVars?: any;
+          events?: any;
+        }
+      ) => any;
+    };
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 interface YTPlayer {
   playVideo: () => void;
@@ -68,8 +82,8 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
     // Define the onYouTubeIframeAPIReady function
     if (!(window as any).onYouTubeIframeAPIReady) {
       (window as any).onYouTubeIframeAPIReady = () => {
-        if (typeof YT !== 'undefined' && YT.Player) {
-          playerRef.current = new YT.Player(playerElementId, {
+        if (typeof window.YT !== 'undefined' && window.YT.Player) {
+          playerRef.current = new window.YT.Player(playerElementId, {
             height: '1',
             width: '1',
             playerVars: {
@@ -92,7 +106,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
     }
 
     // Load YouTube API if not already loaded
-    if (typeof YT === 'undefined' || !YT.Player) {
+    if (typeof window.YT === 'undefined' || !window.YT.Player) {
       const tag = document.createElement('script')
       tag.src = 'https://www.youtube.com/iframe_api'
       const firstScriptTag = document.getElementsByTagName('script')[0]
@@ -100,7 +114,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
     } else {
       // If YT API is already loaded
       if (!playerRef.current) {
-        playerRef.current = new YT.Player(playerElementId, {
+        playerRef.current = new window.YT.Player(playerElementId, {
           height: '1',
           width: '1',
           playerVars: {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { RetroTapePlayer } from "@/components/retro-tape-player"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { Song } from "@/components/retro-tape-player"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
-export default function PlaybackPage() {
+function PlaybackContent() {
   const searchParams = useSearchParams()
   const [songs, setSongs] = useState<Song[]>([])
   const [to, setTo] = useState<string>("For You")
@@ -104,5 +104,20 @@ export default function PlaybackPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PlaybackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-100">
+        <div className="text-center">
+          <h2 className="text-xl mb-2 text-black font-mono font-extrabold">Loading your mixtape...</h2>
+          <p className="text-gray-500">Getting your songs ready to play.</p>
+        </div>
+      </div>
+    }>
+      <PlaybackContent />
+    </Suspense>
   )
 } 
