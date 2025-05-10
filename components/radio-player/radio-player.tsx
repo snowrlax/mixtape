@@ -162,15 +162,8 @@ export function RadioPlayer({ songs, variant = "modern", className }: RadioPlaye
             </div>
             <div className="text-sm opacity-80 truncate">{currentSong.artist}</div>
 
-            {variant === "modern" && (
-              <Badge variant="secondary" className="mt-1">
-                <Radio className="w-3 h-3 mr-1" />
-                FM {frequency.toFixed(1)}
-              </Badge>
-            )}
-
             {variant === "retro" && (
-              <div className="mt-2 px-2 py-1 bg-[#e6d7b0] inline-block text-xs uppercase tracking-wider">
+              <div className="mt-2 px-2 py-1 bg-[#e6d7b0] inline-block text-xs uppercase tracking-wider text-stone-600">
                 NO TAPE
                 <span className="ml-2 inline-block w-2 h-2 bg-green-500 rounded-full"></span>
               </div>

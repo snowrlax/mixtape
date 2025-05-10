@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Card, CardContent } from "@/components/ui/card"
 import { playSoundEffect } from "@/public"
+import { cmmnhlpr } from "@/lib/commonhelper"
 
 // Add YouTube IFrame API type declaration
 declare global {
@@ -64,6 +65,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
   const [isPlayerReady, setIsPlayerReady] = useState(false)
 
   const playerRef = useRef<YTPlayer | null>(null)
+  const isChangingSong = useRef(false)
   const playerElementId = 'youtube-player'
   const currentSong = songs[currentSongIndex]
 
@@ -137,7 +139,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
 
     // Cleanup on component unmount
     return () => {
-     
+
       if (playerRef.current) {
         playerRef.current.destroy()
       }
@@ -161,9 +163,10 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
       handleNext()
     } else if (event.data === 1) { // Playing
       setIsPlaying(true)
-    } else if (event.data === 2) { // Paused
+    } else if (event.data === 2 && !isChangingSong.current) { // Paused
       setIsPlaying(false)
     }
+    isChangingSong.current = false
   }
 
   // Handle player errors
@@ -175,6 +178,8 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
   // Effect for play/pause state changes
   useEffect(() => {
     if (!isPlayerReady || !playerRef.current || !isTapeInserted) return
+
+    console.log('isPlaying in useEffect', isPlaying)
 
     if (isPlaying) {
       playerRef.current.playVideo()
@@ -215,23 +220,27 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
 
   const handlePlay = () => {
     playSoundEffect('/sound-effects/cassette-tape-button.mp3');
+    console.log('usPlaying in handlePlay', !isPlaying)
     setIsPlaying(!isPlaying)
   }
 
   const handlePrevious = () => {
     playSoundEffect('/sound-effects/cassette-tape-button.mp3');
+    isChangingSong.current = true;
     setCurrentSongIndex((prev) => (prev === 0 ? songs.length - 1 : prev - 1))
+    console.log('usPlaying in handlePrevious true')
     setIsPlaying(true)
   }
 
   const handleNext = () => {
     playSoundEffect('/sound-effects/cassette-tape-button.mp3');
+    isChangingSong.current = true;
     setCurrentSongIndex((prev) => (prev === songs.length - 1 ? 0 : prev + 1))
+    console.log('usPlaying in handleNext true')
     setIsPlaying(true)
   }
 
   const handleVolumeChange = (value: number[]) => {
-    playSoundEffect('/sound-effects/cassette-tape-button.mp3');
     setVolume(value[0])
     if (value[0] > 0 && isMuted) {
       setIsMuted(false)
@@ -253,6 +262,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
       setIsEjecting(true)
       if (isPlaying) {
         setIsPlaying(false)
+        console.log('isPlaying in handleEjectTape false')
       }
       setTimeout(() => {
         setIsTapeInserted(false)
@@ -269,22 +279,13 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
     }
   }
 
-  // Theme styles - only cream theme
-  const themeStyles = {
-    body: "bg-[#f5e9c9] border-2 border-[#d3c59e]",
-    display: "bg-[#e6d7b0]",
-    buttons: "bg-[#e6d7b0] hover:bg-[#d3c59e] text-gray-800",
-    text: "text-gray-800",
-    tape: "bg-black",
-    reels: "bg-gray-200",
-    window: "bg-[#f2e8cf]",
-  }
+
 
   return (
     <Card
       className={cn(
         "w-full max-w-md overflow-hidden transition-all rounded-lg shadow-lg py-0",
-        themeStyles.body,
+        cmmnhlpr.themeStyles.body,
         className,
       )}
     >
@@ -293,10 +294,10 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
         <div
           className={cn(
             "relative h-8 w-full rounded-md mb-2 overflow-hidden flex items-center px-4",
-            themeStyles.display,
+            cmmnhlpr.themeStyles.display,
           )}
         >
-          <div className="absolute inset-0 flex items-center justify-between px-4 text-xs text-black">
+          <div className="absolute inset-0 flex items-center justify-between px-4 text-xs text-stone-500">
             <span>88</span>
             <span>92</span>
             <span>96</span>
@@ -331,89 +332,78 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
         {/* Cassette Tape Display */}
         <div
           className={cn(
-            "relative w-full aspect-[2/1] rounded-lg overflow-hidden mb-4 p-4",
-            themeStyles.window,
+            "relative w-full aspect-[3/2] rounded-lg overflow-hidden mb-4 p-4 border ",
+            cmmnhlpr.themeStyles.window,
           )}
         >
           {/* Empty Tape Slot when ejected */}
           {!isTapeInserted && !isEjecting && (
-            <div className={cn("absolute inset-0 p-3 flex items-center justify-center", themeStyles.window)}>
-              <div className="text-xs text-gray-400 uppercase tracking-wider">No Tape</div>
+            <div className={cn("absolute inset-0 p-3 flex items-center justify-center", cmmnhlpr.themeStyles.window)}>
+              <div className="text-xs text-stone-500 uppercase tracking-wider">No Tape</div>
             </div>
           )}
 
           {/* Animated Tape */}
-          <div
-            className={cn(
-              "absolute inset-[10%] transition-transform duration-1000 rounded-md",
-              themeStyles.tape,
-              isEjecting && isTapeInserted ? "-translate-y-full" : "",
-              isEjecting && !isTapeInserted ? "translate-y-0" : "",
-              !isEjecting && !isTapeInserted ? "-translate-y-full" : "",
-              "transform-gpu", // Hardware acceleration
-            )}
-          >
-            {/* Tape Label */}
-            <div className="absolute inset-x-[5%] top-[5%] h-[25%] bg-white flex items-center justify-center border-b border-gray-200">
-              <div className="text-lg font-bold text-gray-800 uppercase tracking-wider px-2 w-full text-center">
-                {`${to}'s MIX`}
+          <div className={cn("absolute inset-[10%] transition-transform duration-1000 h-44 w-80 flex-col rounded-xl border-8 bg-amber-100",
+            cmmnhlpr.themeStyles.tape,
+            isEjecting && isTapeInserted ? "-translate-y-[120%]" : "",
+            isEjecting && !isTapeInserted ? "translate-y-0" : "",
+            !isEjecting && !isTapeInserted ? "-translate-y-[120%]" : "",
+            "transform-gpu", // Hardware acceleration
+          )}>
+            <div className="absolute top-2 left-2 z-10 h-2 w-2 rounded-full border-2 border-amber-100 bg-black" />
+            <div className="absolute top-2 right-2 z-10 h-2 w-2 rounded-full border-2 border-amber-100 bg-black" />
+            <div className="absolute bottom-2 left-2 z-10 h-2 w-2 rounded-full border-2 border-amber-100 bg-black" />
+            <div className="absolute right-2 bottom-2 z-10 h-2 w-2 rounded-full border-2 border-amber-100 bg-black" />
+            <div className="flex h-1/2 w-full items-center">
+              <div className="z-20 mx-auto h-12 w-[90%] rounded-sm bg-amber-100 flex items-center justify-center" >
+                <div className="text-center text-lg font-bold text-black font-mono -rotate-2">
+                  <p>{to.toUpperCase()}'S MIX</p>
+                </div>
               </div>
             </div>
-
-            {/* Colored tape window section */}
-            <div className="absolute top-[40%] inset-x-[5%] h-[20%] flex">
-              <div className="w-[25%] h-full bg-red-500"></div>
-              <div className="w-[15%] h-full bg-yellow-400"></div>
-              <div className="w-[20%] h-full bg-gray-900 flex items-center justify-center">
-                <div className="w-[80%] h-[70%] bg-white"></div>
-              </div>
-              <div className="w-[15%] h-full bg-green-500"></div>
-              <div className="w-[25%] h-full bg-indigo-500"></div>
+            <div className="mx-auto flex h-12 w-[60%] justify-between items-center rounded-xl border-2 border-white bg-amber-200 p-2">
+              <div className="h-8 w-8 rounded-full border-4 bg-stone-700 border-stone-400" />
+              <div className="h-8 w-20 rounded-sm border-4 border-amber-800 bg-amber-950" />
+              <div className="h-8 w-8 rounded-full border-4 bg-stone-700 border-stone-400" />
             </div>
-
-            {/* Reels */}
-            <div className="absolute top-[40%] inset-x-[5%] h-[20%] flex items-center justify-between px-4 pointer-events-none">
-              <div className={cn(
-                "w-[20%] aspect-square rounded-full bg-gray-200 flex items-center justify-center",
-                isPlaying ? "animate-spin-slow" : ""
-              )}
-              style={{
-                animationDuration: isPlaying ? "3s" : "0s",
-                animationTimingFunction: "linear",
-                animationIterationCount: "infinite",
-              }}>
-                <div className="w-[30%] h-[30%] rounded-full bg-gray-400"></div>
-              </div>
-              <div className={cn(
-                "w-[20%] aspect-square rounded-full bg-gray-200 flex items-center justify-center",
-                isPlaying ? "animate-spin-slow" : ""
-              )}
-              style={{
-                animationDuration: isPlaying ? "3s" : "0s",
-                animationTimingFunction: "linear",
-                animationIterationCount: "infinite",
-              }}>
-                <div className="w-[30%] h-[30%] rounded-full bg-gray-400"></div>
-              </div>
-            </div>
-
-            {/* Side indicator */}
-            <div className="absolute bottom-[15%] left-[15%] w-6 h-6 bg-black flex items-center justify-center">
-              <span className="text-white font-bold text-xs">A</span>
-            </div>
-
-            {/* Corner circles */}
-            <div className="absolute top-[5%] left-[5%] w-3 h-3 rounded-full bg-white"></div>
-            <div className="absolute top-[5%] right-[5%] w-3 h-3 rounded-full bg-white"></div>
-            <div className="absolute bottom-[5%] left-[5%] w-3 h-3 rounded-full bg-white"></div>
-            <div className="absolute bottom-[5%] right-[5%] w-3 h-3 rounded-full bg-white"></div>
           </div>
+
+
+
+
+
+          {/* Status Indicators */}
+          <div className="flex items-center justify-between mt-4 absolute bottom-2 right-2 w-[95%] mx-auto">
+            <div className="flex items-center">
+              <div
+                className={cn(
+                  "w-3 h-3 rounded-full",
+                  !isPlayerReady ? "bg-yellow-500" : !isTapeInserted ? "bg-yellow-500" : isPlaying ? "bg-green-500" : "bg-green-500",
+                )}
+              ></div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleEjectTape}
+              className={cn(
+                cmmnhlpr.themeStyles.buttons,
+                "text-xs uppercase tracking-wider text-stone-600",
+                (isEjecting || !isPlayerReady) && "opacity-50 cursor-not-allowed",
+              )}
+              disabled={isEjecting || !isPlayerReady}
+            >
+              {isTapeInserted ? "Eject" : "Insert"}
+            </Button>
+          </div>
+
         </div>
 
         {/* Song Info Display */}
-        <div className={cn("flex items-center justify-between px-3 py-2 rounded-md mb-4", themeStyles.display)}>
-          <div className="text-xs font-medium text-gray-800 truncate">
-            {isTapeInserted ? `Track ${currentSongIndex + 1}` : "No Tape"}
+        <div className={cn("flex items-center justify-between px-3 py-2 rounded-md mb-4", cmmnhlpr.themeStyles.display)}>
+          <div className="text-xs font-light text-gray-800 truncate tracking-wider">
+            {isTapeInserted ? `Track ${currentSongIndex + 1} / ${songs.length}` : "No Tape"}
           </div>
           <div className="text-xs font-mono text-gray-800">
             00:00 / 00:00
@@ -422,14 +412,14 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
 
         {/* Control Buttons */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
             <Button
               variant="outline"
               size="icon"
               onClick={handlePrevious}
               className={cn(
                 "h-8 w-8 rounded-full",
-                themeStyles.buttons,
+                cmmnhlpr.themeStyles.buttons,
                 (!isTapeInserted || !isPlayerReady) && "opacity-50 cursor-not-allowed",
               )}
               disabled={!isTapeInserted || !isPlayerReady}
@@ -443,7 +433,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
               onClick={handlePlay}
               className={cn(
                 "h-8 w-8 rounded-full",
-                themeStyles.buttons,
+                cmmnhlpr.themeStyles.buttons,
                 (!isTapeInserted || !isPlayerReady) && "opacity-50 cursor-not-allowed",
               )}
               disabled={!isTapeInserted || !isPlayerReady}
@@ -457,7 +447,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
               onClick={handleNext}
               className={cn(
                 "h-8 w-8 rounded-full",
-                themeStyles.buttons,
+                cmmnhlpr.themeStyles.buttons,
                 (!isTapeInserted || !isPlayerReady) && "opacity-50 cursor-not-allowed",
               )}
               disabled={!isTapeInserted || !isPlayerReady}
@@ -473,7 +463,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
               onClick={handleMuteToggle}
               className={cn(
                 "h-8 w-8 rounded-full",
-                themeStyles.buttons,
+                cmmnhlpr.themeStyles.buttons,
                 (!isTapeInserted || !isPlayerReady) && "opacity-50 cursor-not-allowed",
               )}
               disabled={!isTapeInserted || !isPlayerReady}
@@ -502,31 +492,6 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
           </div>
         </div>
 
-        {/* Status Indicators */}
-        <div className="flex items-center justify-between mt-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleEjectTape}
-            className={cn(
-              themeStyles.buttons,
-              "text-xs uppercase tracking-wider",
-              (isEjecting || !isPlayerReady) && "opacity-50 cursor-not-allowed",
-            )}
-            disabled={isEjecting || !isPlayerReady}
-          >
-            {isTapeInserted ? "Eject" : "Insert"}
-          </Button>
-
-          <div className="flex items-center">
-            <div
-              className={cn(
-                "w-3 h-3 rounded-full",
-                !isPlayerReady ? "bg-yellow-500" : !isTapeInserted ? "bg-yellow-500" : isPlaying ? "bg-green-500" : "bg-green-500",
-              )}
-            ></div>
-          </div>
-        </div>
       </CardContent>
     </Card>
   )

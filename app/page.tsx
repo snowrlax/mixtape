@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Song } from "@/components/retro-tape-player"
+import { cmmnhlpr } from "@/lib/commonhelper"
+import { cn } from "@/lib/utils"
+import { Trash } from "lucide-react"
 
 // Initial empty songs array
 const initialSongs: Song[] = []
@@ -67,18 +70,41 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-gray-50 to-gray-100">
-      <h1 className="text-4xl font-bold mb-8 text-center text-gray-800 font-mono tracking-tight">Create Your Mixtape</h1>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 ">
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_14px]"></div>
+      <h1 className="text-4xl font-extrabold mb-8 text-center text-stone-800 font-mono tracking-tight">Mixtape</h1>
+
+      <div className={cn("relative transition-transform duration-500 h-44 w-80 flex-col rounded-xl border-8 bg-amber-100 mb-8 hover:-rotate-3",
+        cmmnhlpr.themeStyles.tape,
+
+      )}>
+        <div className="absolute top-2 left-2 z-10 h-2 w-2 rounded-full border-2 border-amber-100 bg-black" />
+        <div className="absolute top-2 right-2 z-10 h-2 w-2 rounded-full border-2 border-amber-100 bg-black" />
+        <div className="absolute bottom-2 left-2 z-10 h-2 w-2 rounded-full border-2 border-amber-100 bg-black" />
+        <div className="absolute right-2 bottom-2 z-10 h-2 w-2 rounded-full border-2 border-amber-100 bg-black" />
+        <div className="flex h-1/2 w-full items-center">
+          <div className="z-20 mx-auto h-12 w-[90%] rounded-sm bg-amber-100 flex items-center justify-center" >
+            <div className="text-center text-lg font-bold text-black font-mono ">
+              <p>{"YOUR MIX"}</p>
+            </div>
+          </div>
+        </div>
+        <div className="mx-auto flex h-12 w-[60%] justify-between items-center rounded-xl border-2 border-white bg-amber-200 p-2">
+          <div className="h-8 w-8 rounded-full border-4 bg-stone-700 border-stone-400" />
+          <div className="h-8 w-20 rounded-sm border-4 border-amber-800 bg-amber-950" />
+          <div className="h-8 w-8 rounded-full border-4 bg-stone-700 border-stone-400" />
+        </div>
+      </div>
 
       {/* Form to add songs */}
-      <div className="w-full max-w-md mb-6 p-6 bg-white rounded-xl shadow-lg border border-gray-100">
+      <div className={cn("w-full max-w-md mb-6 p-6 rounded-xl shadow-lg border", cmmnhlpr.themeStyles.body)}>
         <div className="space-y-4">
           <Input
             type="text"
             placeholder="Who is the mixtape for?"
             value={to}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTo(e.target.value)}
-            className="h-12 text-base"
+            className="h-12 text-base bg-stone-500 border-2 border-stone-600 text-white"
           />
           <div className="flex gap-2">
             <Input
@@ -87,11 +113,11 @@ export default function Home() {
               value={inputUrl}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputUrl(e.target.value)}
               onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleAddSong()}
-              className="h-12 text-base flex-1"
+              className="h-12 text-base flex-1 bg-stone-500 border-2 border-stone-600 text-white"
             />
-            <Button 
-              className="h-12 px-6 bg-amber-500 hover:bg-amber-600 text-white transition-colors" 
-              onClick={handleAddSong} 
+            <Button
+              className="h-12 px-6 border-2 border-stone-600 bg-stone-500 hover:bg-stone-600 text-white transition-colors"
+              onClick={handleAddSong}
               disabled={songs.length >= 5}
             >
               Add
@@ -111,7 +137,7 @@ export default function Home() {
             <h3 className="font-medium mb-3 text-gray-800">Your Mixtape:</h3>
             <ul className="space-y-2">
               {songs.map((song, index) => (
-                <li key={index} className="flex justify-between items-center p-3 bg-amber-50 rounded-lg border border-amber-100">
+                <li key={index} className="flex justify-between items-center p-3 bg-amber-50 rounded-lg border-2 border-[#d3c59e]">
                   <span className="font-medium text-gray-700">
                     Track {index + 1}
                   </span>
@@ -119,9 +145,9 @@ export default function Home() {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleRemoveSong(index)}
-                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                    className="text-red-400 hover:text-red-400 hover:bg-red-100 bg-red-50"
                   >
-                    Remove
+                    <Trash />
                   </Button>
                 </li>
               ))}
