@@ -8,6 +8,7 @@ import { Song } from "@/components/retro-tape-player"
 import { cmmnhlpr } from "@/lib/commonhelper"
 import { cn } from "@/lib/utils"
 import { Trash } from "lucide-react"
+import { ConfettiButton } from "@/components/confetti/confetti-wrapper"
 
 // Initial empty songs array
 const initialSongs: Song[] = []
@@ -65,8 +66,11 @@ export default function Home() {
     // Extract video IDs and create query parameter
     const videoIds = songs.map(song => song.id).join(',')
 
-    // Navigate to the playback page with video IDs in query parameters
-    router.push(`/mixtape/playback?v=${encodeURIComponent(videoIds)}&to=${encodeURIComponent(to)}`)
+    // Wait for 5 seconds before navigating
+    setTimeout(() => {
+      // Navigate to the playback page with video IDs in query parameters
+      router.push(`/mixtape/playback?v=${encodeURIComponent(videoIds)}&to=${encodeURIComponent(to)}`)
+    }, 3000) // 5000 milliseconds = 5 seconds
   }
 
   return (
@@ -156,13 +160,12 @@ export default function Home() {
         )}
 
         {/* Create Mixtape button */}
-        <Button
-          className="w-full mt-6 h-12 bg-amber-500 hover:bg-amber-600 text-white transition-colors text-base font-medium"
+        <ConfettiButton className="w-full mt-6 h-12 bg-amber-500 hover:bg-amber-600 text-white transition-colors text-base font-medium"
           disabled={songs.length === 0}
-          onClick={handleCreateMixtape}
-        >
+          onClick={handleCreateMixtape}>
+
           Create Mixtape
-        </Button>
+        </ConfettiButton>
       </div>
     </div>
   )
