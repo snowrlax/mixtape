@@ -167,6 +167,12 @@ export default function Home() {
           Create Mixtape
         </ConfettiButton>
       </div>
+      <div className="mt-6 text-center text-sm text-gray-500">
+          <p className="text-xs text-stone-400 font-mono">"every artist is a thief" - Pablo Picasso.</p>
+          {/* <p className="mt-2 underline text-sm font-extralight text-black underline-offset-1"><Link href="/">
+            Create a new mixtape
+          </Link></p> */}
+        </div>
     </div>
   )
 }
