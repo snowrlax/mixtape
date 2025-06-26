@@ -19,8 +19,8 @@ interface ConfettiButtonProps extends ComponentProps<typeof Button> {
 export function ConfettiButton({
   children,
   confettiColors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#00ffff", "#ff00ff"],
-  particleCount = 100,
-  spread = 100,
+  particleCount = 500,
+  spread = 500,
   onClick,
   disabled,
   className,

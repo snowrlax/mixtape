@@ -70,7 +70,7 @@ export default function Home() {
     setTimeout(() => {
       // Navigate to the playback page with video IDs in query parameters
       router.push(`/mixtape/playback?v=${encodeURIComponent(videoIds)}&to=${encodeURIComponent(to)}`)
-    }, 3000) // 5000 milliseconds = 5 seconds
+    }, 500) // 5000 milliseconds = 5 seconds
   }
 
   return (
@@ -79,7 +79,7 @@ export default function Home() {
 
       <h1 className="text-4xl font-extrabold mb-8 text-center text-stone-800 font-mono tracking-tight flex gap-1 items-center"> <span className="">Mi</span><span className="font-miltonian-tattoo text-4xl">x</span><span className="">tape</span></h1>
 
-      <div className={cn("relative transition-transform duration-500 h-44 w-80 flex-col rounded-xl border-8 bg-amber-100 mb-8 hover:-rotate-3",
+      <div className={cn("relative transition-transform duration-500 h-44 w-80 flex-col rounded-xl border-8 bg-amber-100 mb-8 rotate-2 hover:rotate-0",
         cmmnhlpr.themeStyles.tape,
 
       )}>

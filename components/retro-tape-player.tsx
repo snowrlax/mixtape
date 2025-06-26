@@ -338,7 +338,6 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
           <div className="absolute h-full w-1 bg-red-500" style={{ left: `${((frequency - 88) / 20) * 100}%` }} />
         </div>
         <Slider
-          
           value={[frequency]}
           min={88}
           max={108}
