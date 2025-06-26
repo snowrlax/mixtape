@@ -284,11 +284,40 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
   return (
     <Card
       className={cn(
-        "w-full max-w-md overflow-hidden transition-all rounded-lg shadow-lg py-0",
+        "w-full max-w-md  transition-all rounded-lg shadow-lg py-0 relative mt-12 z-[3]",
         cmmnhlpr.themeStyles.body,
         className,
       )}
     >
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-10 w-full h-14 z-10">
+        <div className="absolute left-0 top-8 w-10 h-6 bg-[#d5c4a7] border-2 border-[#c4b396] rounded-b-lg shadow-md"></div>
+        <div className="absolute right-0 top-8 w-10 h-6 bg-[#d5c4a7] border-2 border-[#c4b396] rounded-b-lg shadow-md"></div>
+
+        <div className="absolute left-4 top-0 w-5 h-10 bg-[#e6d5b8] border-2 border-[#d5c4a7] rounded-t-lg shadow-inner"></div>
+        <div className="absolute right-4 top-0 w-5 h-10 bg-[#e6d5b8] border-2 border-[#d5c4a7] rounded-t-lg shadow-inner"></div>
+
+        <div className="absolute left-1/2 top-0 transform -translate-x-1/2 w-[calc(100%-40px)] h-5 bg-[#8b4513] border border-[#5d4037] rounded-full flex items-center justify-center shadow-md">
+          <div className="w-[95%] h-2 bg-[#a1887f] rounded-full opacity-70"></div></div>
+        <div className="absolute left-1/2 top-0 transform -translate-x-1/2 w-[calc(100%-50px)] h-5 flex justify-between items-center px-2">
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+          <div className="w-0.5 h-3 bg-[#5d4037] rounded-full opacity-30"></div>
+        </div>
+        <div className="absolute left-1/2 top-1 transform -translate-x-1/2 w-[calc(100%-60px)] h-1 bg-[#5d4037] opacity-20 blur-sm rounded-full"></div>
+      </div>
       {/* Radio Frequency Display */}
       <div className="px-6 pt-6">
         <div
@@ -297,7 +326,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
             cmmnhlpr.themeStyles.display,
           )}
         >
-          <div className="absolute inset-0 flex items-center justify-between px-4 text-xs text-stone-500">
+          <div className="absolute inset-0 flex items-center justify-between px-4 text-[10px] text-stone-500">
             <span>88</span>
             <span>92</span>
             <span>96</span>
@@ -309,7 +338,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
           <div className="absolute h-full w-1 bg-red-500" style={{ left: `${((frequency - 88) / 20) * 100}%` }} />
         </div>
         <Slider
-          disabled
+          
           value={[frequency]}
           min={88}
           max={108}
@@ -344,7 +373,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
           )}
 
           {/* Animated Tape */}
-          <div className={cn("absolute inset-[10%] transition-transform duration-1000 h-44 w-80 flex-col rounded-xl border-8 bg-amber-100",
+          <div className={cn("absolute inset-[10%] transition-transform duration-1000 aspect-[1.7] flex-col rounded-xl border-8 bg-amber-100",
             cmmnhlpr.themeStyles.tape,
             isEjecting && isTapeInserted ? "-translate-y-[120%]" : "",
             isEjecting && !isTapeInserted ? "translate-y-0" : "",
@@ -362,9 +391,9 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
                 </div>
               </div>
             </div>
-            <div className="mx-auto flex h-12 w-[60%] justify-between items-center rounded-xl border-2 border-white bg-amber-200 p-2">
+            <div className="mx-auto flex h-12 w-[63%] justify-between items-center rounded-xl border-2 border-white bg-amber-200 p-2">
               <div className="h-8 w-8 rounded-full border-4 bg-stone-700 border-stone-400" />
-              <div className="h-8 w-20 rounded-sm border-4 border-amber-800 bg-amber-950" />
+              <div className="h-8 w-18 rounded-sm border-4 border-amber-800 bg-amber-950" />
               <div className="h-8 w-8 rounded-full border-4 bg-stone-700 border-stone-400" />
             </div>
           </div>
@@ -389,7 +418,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
               onClick={handleEjectTape}
               className={cn(
                 cmmnhlpr.themeStyles.buttons,
-                "text-xs uppercase tracking-wider text-stone-600",
+                "text-xs uppercase tracking-wider text-stone-600 animate-pulse",
                 (isEjecting || !isPlayerReady) && "opacity-50 cursor-not-allowed",
               )}
               disabled={isEjecting || !isPlayerReady}
@@ -402,11 +431,19 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
 
         {/* Song Info Display */}
         <div className={cn("flex items-center justify-between px-3 py-2 rounded-md mb-4", cmmnhlpr.themeStyles.display)}>
-          <div className="text-xs font-light text-gray-800 truncate tracking-wider">
+          <div className="text-base font-light text-gray-800 truncate tracking-tight">
             {isTapeInserted ? `Track ${currentSongIndex + 1} / ${songs.length}` : "No Tape"}
           </div>
-          <div className="text-xs font-mono text-gray-800">
-            00:00 / 00:00
+          <div className="text-xs font-mono text-gray-800 flex gap-1">
+            <div className="h-6 w-3 rounded bg-[#d3c59e]"></div>
+            <div className="h-6 w-3 rounded bg-[#d3c59e]"></div>
+            <div className="h-6 w-3 rounded bg-[#d3c59e]"></div>
+            <div className="h-6 w-3 rounded bg-[#d3c59e]"></div>
+            <div className="h-6 w-3 rounded bg-[#d3c59e]"></div>
+            <div className="h-6 w-3 rounded bg-[#d3c59e]"></div>
+            <div className="h-6 w-3 rounded bg-[#d3c59e]"></div>
+            <div className="h-6 w-3 rounded bg-[#d3c59e]"></div>
+            <div className="h-6 w-3 rounded bg-[#d3c59e]"></div>
           </div>
         </div>
 
