@@ -74,8 +74,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 ">
-      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_14px]"></div>
+    <div className="min-h-screen relative flex flex-col items-center justify-center p-4 ">
+      <div className="absolute inset-0 -z-10 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_14px]"></div>
+
       <h1 className="text-4xl font-extrabold mb-8 text-center text-stone-800 font-mono tracking-tight">Mixtape</h1>
 
       <div className={cn("relative transition-transform duration-500 h-44 w-80 flex-col rounded-xl border-8 bg-amber-100 mb-8 hover:-rotate-3",
