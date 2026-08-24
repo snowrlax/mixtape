@@ -7,10 +7,26 @@ import { Input } from "@/components/ui/input"
 import { Song } from "@/components/retro-tape-player"
 import { cmmnhlpr } from "@/lib/commonhelper"
 import { cn } from "@/lib/utils"
-import { Trash } from "lucide-react"
+
 import { ConfettiButton } from "@/components/confetti/confetti-wrapper"
 import { CollageAsset } from "@/components/collage/collage-asset"
 import { AnimatePresence, motion } from "motion/react"
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { SortableTrack } from "@/components/song-list/sortable-track"
 
 /** A song plus a local id, so list rows keep their identity while animating. */
 type DraftSong = Song & { uid: number }
@@ -61,6 +77,23 @@ export default function Home() {
 
     setInputUrl("")
     setError("")
+  }
+
+  // A small drag threshold keeps a click on the handle from counting as a drag.
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  )
+
+  const handleReorder = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const from = songs.findIndex((song) => song.uid === active.id)
+    const to = songs.findIndex((song) => song.uid === over.id)
+    if (from === -1 || to === -1) return
+
+    setSongs(arrayMove(songs, from, to))
   }
 
   const handleRemoveSong = (uid: number) => {
@@ -204,38 +237,36 @@ export default function Home() {
                 className="overflow-hidden"
               >
                 <div className="pt-6">
-                  <h3 className="font-medium mb-3 text-gray-800">Your Mixtape:</h3>
-                  <ul>
-                    <AnimatePresence initial={false}>
-                      {songs.map((song, index) => (
-                        <motion.li
-                          key={song.uid}
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.26, ease: EASE_OUT }}
-                          className="overflow-hidden"
-                        >
-                          {/* Gap lives inside the animated box so it collapses with the row */}
-                          <div className="pb-2">
-                            <div className="flex justify-between items-center p-3 bg-amber-50 rounded-lg border-2 border-[#d3c59e]">
-                              <span className="font-medium text-gray-700">
-                                Track {index + 1}
-                              </span>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleRemoveSong(song.uid)}
-                                className="text-red-400 hover:text-red-400 hover:bg-red-100 bg-red-50 active:scale-90"
-                              >
-                                <Trash />
-                              </Button>
-                            </div>
-                          </div>
-                        </motion.li>
-                      ))}
-                    </AnimatePresence>
-                  </ul>
+                  <div className="mb-3 flex items-baseline justify-between">
+                    <h3 className="font-medium text-gray-800">Your Mixtape:</h3>
+                    {songs.length > 1 && (
+                      <span className="text-xs text-stone-400">drag to reorder</span>
+                    )}
+                  </div>
+<DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleReorder}
+                  >
+                    <SortableContext
+                      items={songs.map((song) => song.uid)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <ul>
+                        <AnimatePresence initial={false}>
+                          {songs.map((song, index) => (
+                            <SortableTrack
+                              key={song.uid}
+                              id={song.uid}
+                              index={index}
+                              ease={EASE_OUT}
+                              onRemove={() => handleRemoveSong(song.uid)}
+                            />
+                          ))}
+                        </AnimatePresence>
+                      </ul>
+                    </SortableContext>
+                  </DndContext>
                 </div>
               </motion.div>
             )}
