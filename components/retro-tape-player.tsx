@@ -361,16 +361,25 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
       <CardContent className="p-6 pt-2">
         {/* Cassette Tape Display */}
         <div className="relative mb-4">
-          {/* One-time hint arrow, parked just outside the Insert button.
-              The arrowhead sits ~72% down the 237x185 artwork, so at this width
-              `bottom-0` lands the tip on the Insert button's centre line. */}
+          {/* One-time hint arrow pointing at the Insert button. Two artworks:
+              on sm+ it comes in from the right of the button, but on mobile the
+              card is full width with nothing to its right, so a second arrow
+              sits beneath the button and points up at it instead. */}
           {showInsertHint && isPlayerReady && (
-            <img
-              src="/assets/Arrow_05.svg"
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none select-none absolute bottom-0 right-0 w-24 sm:w-28 translate-x-[100%] opacity-70"
-            />
+            <>
+              <img
+                src="/assets/Arrow_05.svg"
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none select-none absolute bottom-0 right-0 hidden w-28 translate-x-[100%] opacity-70 sm:block"
+              />
+              <img
+                src="/assets/Arrow_02.svg"
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none select-none absolute top-full right-4 z-10 w-14 opacity-70 sm:hidden"
+              />
+            </>
           )}
         <div
           className={cn(
