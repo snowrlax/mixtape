@@ -90,7 +90,7 @@ export default function Home() {
         <div className="absolute right-2 bottom-2 z-10 h-2 w-2 rounded-full border-2 border-amber-100 bg-black" />
         <div className="flex h-1/2 w-full items-center">
           <div className="z-20 mx-auto h-12 w-[90%] rounded-sm bg-amber-100 flex items-center justify-center" >
-            <div className="text-center text-lg font-bold text-black font-mono ">
+            <div className="text-center text-lg text-black font-gloria-hallelujah">
               <p>{"YOUR MIX"}</p>
             </div>
           </div>

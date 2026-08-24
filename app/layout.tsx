@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Miltonian_Tattoo } from "next/font/google";
+import { Geist, Geist_Mono, Miltonian_Tattoo, Gloria_Hallelujah } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
 
@@ -10,6 +10,12 @@ const geistSans = Geist({
 
 const miltonianTattoo = Miltonian_Tattoo({
   variable: "--font-miltonian-tattoo",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const gloriaHallelujah = Gloria_Hallelujah({
+  variable: "--font-gloria-hallelujah",
   subsets: ["latin"],
   weight: "400",
 });
@@ -32,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${miltonianTattoo.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${miltonianTattoo.variable} ${gloriaHallelujah.variable} antialiased`}
       >
         {children}
       </body>
