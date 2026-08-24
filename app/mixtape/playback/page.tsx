@@ -17,10 +17,15 @@ function PlaybackContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  // Get the full URL including search params
+  // Only the creator arrives here with `owner=1`; recipients open the stripped link
+  const isOwner = searchParams.get("owner") === "1"
+
+  // Get the shareable URL, minus the owner flag so recipients don't see the creator UI
   const getFullUrl = () => {
     const url = `${window.location.origin}${pathname}`
-    const queryString = searchParams.toString()
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete("owner")
+    const queryString = params.toString()
     return queryString ? `${url}?${queryString}` : url
   }
 
@@ -105,7 +110,7 @@ function PlaybackContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-x-hidden">
       <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_14px]"></div>
 
       <div className="w-full max-w-md">
@@ -122,12 +127,14 @@ function PlaybackContent() {
           </div>
         )}
 
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p className="text-xs text-stone-400">Copy the link of your mixtape <span onClick={copyToClipboard} className="underline underline-offset-1 cursor-copy">here!</span></p>
-          <p className="mt-2 underline text-sm font-extralight text-black underline-offset-1"><Link href="/">
-            Create a new mixtape
-          </Link></p>
-        </div>
+        {isOwner && (
+          <div className="mt-6 text-center text-sm text-gray-500">
+            <p className="text-xs text-stone-400">Copy the link of your mixtape <span onClick={copyToClipboard} className="underline underline-offset-1 cursor-copy">here!</span></p>
+            <p className="mt-2 underline text-sm font-extralight text-black underline-offset-1"><Link href="/">
+              Create a new mixtape
+            </Link></p>
+          </div>
+        )}
       </div>
     </div>
   )

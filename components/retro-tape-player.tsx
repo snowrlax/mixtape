@@ -63,6 +63,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
   const [isTapeInserted, setIsTapeInserted] = useState(false)
   const [isEjecting, setIsEjecting] = useState(false)
   const [isPlayerReady, setIsPlayerReady] = useState(false)
+  const [showInsertHint, setShowInsertHint] = useState(true)
 
   const playerRef = useRef<YTPlayer | null>(null)
   const isChangingSong = useRef(false)
@@ -256,6 +257,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
   }
 
   const handleEjectTape = () => {
+    setShowInsertHint(false)
     if (isTapeInserted) {
       playSoundEffect('/sound-effects/cassette-eject.mp3');
 
@@ -358,9 +360,21 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
 
       <CardContent className="p-6 pt-2">
         {/* Cassette Tape Display */}
+        <div className="relative mb-4">
+          {/* One-time hint arrow, parked just outside the Insert button.
+              The arrowhead sits ~72% down the 237x185 artwork, so at this width
+              `bottom-0` lands the tip on the Insert button's centre line. */}
+          {showInsertHint && isPlayerReady && (
+            <img
+              src="/assets/Arrow_05.svg"
+              alt=""
+              aria-hidden="true"
+              className="pointer-events-none select-none absolute bottom-0 right-0 w-24 sm:w-28 translate-x-[100%] opacity-70"
+            />
+          )}
         <div
           className={cn(
-            "relative w-full aspect-[3/2] rounded-lg overflow-hidden mb-4 p-4 border ",
+            "relative w-full aspect-[3/2] rounded-lg overflow-hidden p-4 border ",
             cmmnhlpr.themeStyles.window,
           )}
         >
@@ -426,6 +440,7 @@ export function RetroTapePlayer({ songs, to, className }: RetroTapePlayerProps) 
             </Button>
           </div>
 
+        </div>
         </div>
 
         {/* Song Info Display */}

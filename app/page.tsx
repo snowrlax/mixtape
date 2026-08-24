@@ -69,7 +69,8 @@ export default function Home() {
     // Wait for 5 seconds before navigating
     setTimeout(() => {
       // Navigate to the playback page with video IDs in query parameters
-      router.push(`/mixtape/playback?v=${encodeURIComponent(videoIds)}&to=${encodeURIComponent(to)}`)
+      // `owner=1` marks this as the creator's own view; it is stripped from the shared link
+      router.push(`/mixtape/playback?v=${encodeURIComponent(videoIds)}&to=${encodeURIComponent(to)}&owner=1`)
     }, 500) // 5000 milliseconds = 5 seconds
   }
 
