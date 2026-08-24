@@ -91,7 +91,7 @@ export default function Home() {
         <div className="flex h-1/2 w-full items-center">
           <div className="z-20 mx-auto h-12 w-[90%] rounded-sm bg-amber-100 flex items-center justify-center" >
             <div className="text-center text-lg text-black font-gloria-hallelujah">
-              <p>{"YOUR MIX"}</p>
+              <p>{"Big Booty Mix Vol 2"}</p>
             </div>
           </div>
         </div>
@@ -170,11 +170,11 @@ export default function Home() {
         </ConfettiButton>
       </div>
       <div className="mt-6 text-center text-sm text-gray-500">
-          <p className="text-xs text-stone-400 font-mono">"Every great artist is a thief." - Pablo Picasso</p>
-          {/* <p className="mt-2 underline text-sm font-extralight text-black underline-offset-1"><Link href="/">
+        <p className="text-xs text-stone-400 font-mono">"Every great artist is a thief." - Pablo Picasso</p>
+        {/* <p className="mt-2 underline text-sm font-extralight text-black underline-offset-1"><Link href="/">
             Create a new mixtape
           </Link></p> */}
-        </div>
+      </div>
     </div>
   )
 }
